@@ -15,7 +15,7 @@ public:
 
 class Graph {
 
-	const int vertex_num;
+	int vertex_num;
 
 	int** weight_matrix;
 
@@ -118,7 +118,24 @@ class Graph {
 
 public:
 
-	Graph(const Graph& other) noexcept : vertex_num(other.vertex_num){
+	Graph(const Graph& other) noexcept {
+		*this = other;
+	}
+
+	Graph(Graph&& other) noexcept {
+		*this = other;
+	}
+
+	Graph(int v_num , int** matrix) noexcept : vertex_num(v_num) {
+		weight_matrix = AllocateMatrix();
+		for (int i = 0; i < vertex_num; ++i) {
+			for (int j = 0; j < vertex_num; ++j) {
+				weight_matrix[i][j] = matrix[i][j];
+			}
+		}
+	}
+
+	Graph& operator=(const Graph& other) {
 		weight_matrix = AllocateMatrix();
 
 		int** matrix = other.weight_matrix;
@@ -133,26 +150,18 @@ public:
 		nodes_of_interest = other.nodes_of_interest;
 		storages = other.storages;
 		addresses = other.addresses;
+		vertex_num = other.vertex_num;
 	}
 
-	Graph(Graph&& other) noexcept : vertex_num(other.vertex_num) {
+	Graph& operator=(Graph&& other) {
 		weight_matrix = other.weight_matrix;
 		other.weight_matrix = nullptr;
-		
+
 		routes = std::move(other.routes);
 		distances = std::move(other.distances);
 		nodes_of_interest = std::move(other.nodes_of_interest);
 		storages = std::move(other.storages);
 		addresses = std::move(other.addresses);
-	}
-
-	Graph(int v_num , int** matrix) noexcept : vertex_num(v_num) {
-		weight_matrix = AllocateMatrix();
-		for (int i = 0; i < vertex_num; ++i) {
-			for (int j = 0; j < vertex_num; ++j) {
-				weight_matrix[i][j] = matrix[i][j];
-			}
-		}
 	}
 
 	//for testing purposes
