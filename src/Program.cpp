@@ -1,6 +1,10 @@
 #include <iostream>
+#include <fstream>
 
 #include"Graph.hpp"
+#include"json.hpp"
+
+using json = nlohmann::json;
 
 int main() {
 
@@ -12,7 +16,6 @@ int main() {
 
 	Graph test(G);
 
-	test.dijkstra(0);
 
 	return 0;
 }

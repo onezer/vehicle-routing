@@ -8,6 +8,7 @@ set(srcs
 	
 set(headers
 	header/Graph.hpp
+	headers/json.hpp
 )
 
 add_executable(${PROJECT_NAME}
