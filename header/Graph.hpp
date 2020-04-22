@@ -20,9 +20,9 @@ class Graph {
 
 	int vertex_num;
 
-	float** _weight_matrix;
-	float** _population;
-	float** _distance;
+	float** _weight_matrix = nullptr;
+	float** _population = nullptr;
+	float** _distance = nullptr;
 
 
 	std::vector<int> storages;
@@ -244,6 +244,23 @@ public:
 			_distance[y][x] = e.at("Length");		//every road is two way
 			_population[x][y] = e.at("Population");
 			_population[y][x] = e.at("Population");
+		}
+	}
+
+	//for testing purposes
+	void Writeoutmatrices() {
+		std::cout << "Population: \n";
+		for (int i = 0; i < vertex_num; ++i) {
+			for (int j = 0; j < vertex_num; ++j) {
+				std::cout << i << "," << j << ": " << _population[i][j] << "\n";
+			}
+		}
+
+		std::cout << "Distance: \n";
+		for (int i = 0; i < vertex_num; ++i) {
+			for (int j = 0; j < vertex_num; ++j) {
+				std::cout << i << "," << j << ": " << _distance[i][j] << "\n";
+			}
 		}
 	}
 

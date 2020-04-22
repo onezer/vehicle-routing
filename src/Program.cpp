@@ -11,8 +11,9 @@ int main() {
 					{3,0,2,0,6},
 					{10,0,1,6,0} };
 
-	Graph test(G);
+	Graph g("D:/roadnetwork.json");
 
+	g.Writeoutmatrices();
 
 	return 0;
 }
