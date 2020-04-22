@@ -13,6 +13,8 @@ int main() {
 
 	Graph g("D:/roadnetwork.json");
 
+	g.OptimizeForCustom([](float p, float d) {return p + d; });
+
 	g.Writeoutmatrices();
 
 	return 0;

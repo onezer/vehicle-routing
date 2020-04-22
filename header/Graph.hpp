@@ -56,7 +56,9 @@ class Graph {
 		delete[] matrix;
 	}
 
-	void OverwriteMatrix(float** from, float**& to, int sizeFrom, int sizeTo) const {
+	void OverwriteMatrix(float** from, float**& to, int sizeFrom, int sizeTo = 0) const {
+		if (sizeTo == 0) sizeTo = sizeFrom;
+
 		if (to != nullptr) DeleteMatrix(to,sizeTo);
 
 		to = AllocateMatrix(sizeFrom);
@@ -138,6 +140,8 @@ class Graph {
 	}
 
 public:
+
+	typedef float(*optimizeCB)(float, float);
 
 	Graph(const Graph& other) noexcept {
 		*this = other;
@@ -256,14 +260,36 @@ public:
 			}
 		}
 
-		std::cout << "Distance: \n";
+		std::cout << "\n Distance: \n";
 		for (int i = 0; i < vertex_num; ++i) {
 			for (int j = 0; j < vertex_num; ++j) {
 				std::cout << i << "," << j << ": " << _distance[i][j] << "\n";
 			}
 		}
+
+		std::cout << "\n Weight: \n";
+		for (int i = 0; i < vertex_num; ++i) {
+			for (int j = 0; j < vertex_num; ++j) {
+				std::cout << i << "," << j << ": " << _weight_matrix[i][j] << "\n";
+			}
+		}
 	}
 
+	void OptimizeForPopulation() {
+		OverwriteMatrix(_population, _weight_matrix, vertex_num);
+	}
+
+	void OptimizeForDistance() {
+		OverwriteMatrix(_distance, _weight_matrix, vertex_num);
+	}
+
+	void OptimizeForCustom(optimizeCB CB) {
+		for (int i = 0; i < vertex_num; ++i) {
+			for (int j = 0; j < vertex_num; ++j) {
+				_weight_matrix[i][j] = CB(_population[i][j], _distance[i][j]);
+			}
+		}
+	}
 
 	~Graph() {
 		DeleteMatrix(_weight_matrix, vertex_num);
