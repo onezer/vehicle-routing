@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <fstream>
 #include"json.hpp"
-#define INFINITY 99999999
 
 using json = nlohmann::json;
 
@@ -51,13 +50,13 @@ class Graph {
 	}
 
 	void DeleteMatrix(float**& matrix, unsigned int size) const {
-		for (int i = 0; i < size; ++i) {
+		for (unsigned int i = 0; i < size; ++i) {
 			delete[] matrix[i];
 		}
 		delete[] matrix;
 	}
 
-	void OverwriteMatrix(const float const*const* const from, float**& to, int sizeFrom, int sizeTo) const {
+	void OverwriteMatrix(float** from, float**& to, int sizeFrom, int sizeTo) const {
 		if (to != nullptr) DeleteMatrix(to,sizeTo);
 
 		to = AllocateMatrix(sizeFrom);
@@ -185,7 +184,7 @@ public:
 		_weight_matrix = AllocateMatrix(vertex_num);
 		for (int i = 0; i < 5; ++i) {
 			for (int j = 0; j < 5; ++j) {
-				_weight_matrix[i][j] = matrix[i][j];
+				_weight_matrix[i][j] = (float)matrix[i][j];
 			}
 		}
 	}
