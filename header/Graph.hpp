@@ -1,7 +1,7 @@
 #pragma once
 
-#include<vector>
-#include<unordered_map>
+#include <vector>
+#include <unordered_map>
 #include <fstream>
 #include"json.hpp"
 #define INFINITY 99999999
@@ -35,10 +35,7 @@ class Graph {
 	std::unordered_map<std::pair<int, int>, std::vector<int>> _route; //route[{3,4}] gives a vector that contains the route nodes from node 3 to node 4 in order
 
 
-
-
-
-	float** AllocateMatrix() {
+	float** AllocateMatrix(int vertex_num) const {
 		float** matrix = new float*[vertex_num];
 		for (int i = 0; i < vertex_num; ++i) {
 			matrix[i] = new float[vertex_num];
@@ -53,11 +50,23 @@ class Graph {
 		return matrix;
 	}
 
-	void DeleteMatrix(float** matrix, unsigned int size) {
+	void DeleteMatrix(float**& matrix, unsigned int size) const {
 		for (int i = 0; i < size; ++i) {
 			delete[] matrix[i];
 		}
 		delete[] matrix;
+	}
+
+	void OverwriteMatrix(const float const*const* const from, float**& to, int sizeFrom, int sizeTo) const {
+		if (to != nullptr) DeleteMatrix(to,sizeTo);
+
+		to = AllocateMatrix(sizeFrom);
+
+		for (int i = 0; i < sizeFrom; ++i) {
+			for (int j = 0; j < sizeFrom; ++j) {
+				to[i][j] = from[i][j];
+			}
+		}
 	}
 
 	void dijkstra(int startnode) {
@@ -66,7 +75,7 @@ class Graph {
 		int *pred, *visited;
 		float *distance, mindistance;
 
-		cost = AllocateMatrix();
+		cost = AllocateMatrix(vertex_num);
 		distance = new float[vertex_num]();
 		pred = new int[vertex_num]();
 		visited = new int[vertex_num]();
@@ -140,23 +149,13 @@ public:
 	}
 
 	Graph(int v_num , float** matrix) noexcept : vertex_num(v_num) {
-		_weight_matrix = AllocateMatrix();
-		for (int i = 0; i < vertex_num; ++i) {
-			for (int j = 0; j < vertex_num; ++j) {
-				_weight_matrix[i][j] = matrix[i][j];
-			}
-		}
+		OverwriteMatrix(matrix, _weight_matrix, vertex_num, vertex_num);
 	}
 
 	Graph& operator=(const Graph& other) {
-		_weight_matrix = AllocateMatrix();
-
-		float** matrix = other._weight_matrix;
-		for (int i = 0; i < vertex_num; ++i) {
-			for (int j = 0; j < vertex_num; ++j) {
-				_weight_matrix[i][j] = matrix[i][j];
-			}
-		}
+		OverwriteMatrix(other._weight_matrix, _weight_matrix, other.vertex_num, vertex_num);
+		OverwriteMatrix(other._population, _population, other.vertex_num, vertex_num);
+		OverwriteMatrix(other._distance, _distance, other.vertex_num, vertex_num);
 
 		_route = other._route;
 		_weight_distance = other._weight_distance;
@@ -183,7 +182,7 @@ public:
 
 	//for testing purposes
 	Graph(int matrix[5][5]): vertex_num(5) {
-		_weight_matrix = AllocateMatrix();
+		_weight_matrix = AllocateMatrix(vertex_num);
 		for (int i = 0; i < 5; ++i) {
 			for (int j = 0; j < 5; ++j) {
 				_weight_matrix[i][j] = matrix[i][j];
@@ -196,6 +195,7 @@ public:
 	void CalculateDistances() {
 		if (_weight_matrix == nullptr) return;
 
+		//TODO:support multithreading
 		for (int node : nodes_of_interest) {
 			dijkstra(node);
 		}
@@ -227,17 +227,24 @@ public:
 			DeleteMatrix(_population, vertex_num);
 		}
 
+		if (_weight_matrix != nullptr) {
+			DeleteMatrix(_weight_matrix, vertex_num);
+		}
+
 		vertex_num = j.at("intersections").size();
 		
-		_distance = AllocateMatrix();
-		_population = AllocateMatrix();
+		_distance = AllocateMatrix(vertex_num);
+		_population = AllocateMatrix(vertex_num);
+		_weight_matrix = AllocateMatrix(vertex_num);
 
 		for (auto e : j.at("roadSegments")) {
 			int x = e.at("NextIntersection").at("Id");
 			int y = e.at("PrevIntersection").at("Id");
 
 			_distance[x][y] = e.at("Length");
+			_distance[y][x] = e.at("Length");		//every road is two way
 			_population[x][y] = e.at("Population");
+			_population[y][x] = e.at("Population");
 		}
 	}
 
