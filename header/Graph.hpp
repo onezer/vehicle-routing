@@ -30,6 +30,8 @@ class Graph {
 	std::vector<int> addresses;
 	std::vector<int> nodes_of_interest; //storages+addresses
 
+	std::unordered_map<int, char> _labels;
+
 	//distances and routes variables only contain the distances and routes for the nodes of interest
 	std::unordered_map<std::pair<int, int>, float> _weight_distance; //_distance[{2,5}] gives the minimum distance between the node 2 and 5
 	std::unordered_map<std::pair<int, int>, std::vector<int>> _route; //route[{3,4}] gives a vector that contains the route nodes from node 3 to node 4 in order
@@ -143,6 +145,14 @@ class Graph {
 public:
 
 	typedef float(*optimizeCB)(float, float);
+
+	void LabelNode(int node, char label) {
+		_labels.insert_or_assign(node, label);
+	}
+
+	char GetLabel(int node) {
+		return _labels.at(node);
+	}
 
 	Graph(const Graph& other) noexcept {
 		*this = other;

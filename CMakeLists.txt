@@ -4,11 +4,18 @@ project(Vehicle-Routing)
 
 set(srcs
 	src/Program.cpp
+	src/genetic.cpp
+	src/population.cpp
+	src/entity.cpp
 )
 	
 set(headers
 	header/Graph.hpp
 	headers/json.hpp
+	headers/genetic.h
+	headers/entity.h
+	headers/parameters.h
+	headers/population.h
 )
 
 add_executable(${PROJECT_NAME}
