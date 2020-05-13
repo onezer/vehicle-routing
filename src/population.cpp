@@ -15,7 +15,7 @@ Population::Population(int num, Parameters parameters, Graph* graph) : parameter
 void Population::CreateEntities(int num)
 {
 	for (int i = 0; i < num; ++i) {
-		std::string currentGene;
+		Gene currentGene;
 		/*for (int j = 0; j < goal.size(); ++j) {
 			int pos = rand() % tempGoal.size();
 
@@ -57,7 +57,7 @@ int Population::Iterate()
 	return genePool[0].first;
 }
 
-std::string Population::BestGene()
+Gene Population::BestGene()
 {
 	SortGenePool();
 	return genePool[0].second.GetGene();
@@ -69,7 +69,7 @@ bool Compare(const std::pair<int, Entity> & first, const std::pair<int, Entity> 
 }
 
 
-void Population::AddEntity(const std::string & gene)
+void Population::AddEntity(const Gene & gene)
 {
 	if (genePool.size() == parameters.max_population) {
 		return;
@@ -80,7 +80,7 @@ void Population::AddEntity(const std::string & gene)
 	genePool.push_back(std::pair<int, Entity>(currentEntity.Cost(), currentEntity));
 }
 
-void Population::AddEntity(std::string && gene)
+void Population::AddEntity(Gene && gene)
 {
 	if (genePool.size() == parameters.max_population) {
 		return;

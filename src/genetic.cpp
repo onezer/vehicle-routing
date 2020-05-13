@@ -1,6 +1,6 @@
 #include "genetic.h"
 
-Genetic::Genetic(std::string goal, Parameters parameters, Graph* graph) : parameters{parameters}, _graph{graph}
+Genetic::Genetic(Parameters parameters, Graph* graph) : parameters{parameters}, _graph{graph}
 {
 }
 
@@ -18,7 +18,7 @@ int Genetic::Iterate()
 	return cost;
 }
 
-std::string Genetic::GetBestGene()
+Gene Genetic::GetBestGene()
 {
 	return population.BestGene();
 }

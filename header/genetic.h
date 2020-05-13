@@ -11,11 +11,11 @@ class Genetic {
 	Graph* _graph;
 
 public:
-	Genetic(std::string goal, Parameters parameters, Graph* graph);
+	Genetic(Parameters parameters, Graph* graph);
 
 	void InitializePopulation(int num);
 
 	int Iterate(); //returns the lowest cost in current generation
 
-	std::string GetBestGene();
+	Gene GetBestGene();
 };

@@ -6,6 +6,7 @@
 
 #include "parameters.hpp"
 #include "entity.h"
+#include "gene.hpp"
 
 class Population {
 
@@ -22,10 +23,10 @@ public:
 	void CreateEntities(int num);
 	
 	int Iterate(); //returns lowest cost
-	std::string BestGene();
+	Gene BestGene();
 
 private:
-	void AddEntity(const std::string &);
-	void AddEntity(std::string &&);
+	void AddEntity(const Gene &);
+	void AddEntity(Gene &&);
 	void SortGenePool();
 };

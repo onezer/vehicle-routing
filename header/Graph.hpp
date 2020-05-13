@@ -19,18 +19,20 @@ public:
 
 class Graph {
 
-	int vertex_num;
+	int _vertex_num;
 
 	float** _weight_matrix = nullptr;
 	float** _population = nullptr;
 	float** _distance = nullptr;
 
 
-	std::vector<int> storages;
-	std::vector<int> addresses;
-	std::vector<int> nodes_of_interest; //storages+addresses
+	std::vector<int> _storages;
+	std::vector<int> _addresses;
+	std::vector<int> _nodes_of_interest; //storages+addresses
 
 	std::unordered_map<int, char> _labels;
+	std::unordered_map<char, std::vector<int>> _nodes_by_group;
+	std::vector<char> _groups;
 
 	//distances and routes variables only contain the distances and routes for the nodes of interest
 	std::unordered_map<std::pair<int, int>, float> _weight_distance; //_distance[{2,5}] gives the minimum distance between the node 2 and 5
@@ -74,15 +76,15 @@ class Graph {
 	}
 
 	void dijkstra(int startnode) {
-		int n = vertex_num;
+		int n = _vertex_num;
 		float** cost;
 		int *pred, *visited;
 		float *distance, mindistance;
 
-		cost = AllocateMatrix(vertex_num);
-		distance = new float[vertex_num]();
-		pred = new int[vertex_num]();
-		visited = new int[vertex_num]();
+		cost = AllocateMatrix(_vertex_num);
+		distance = new float[_vertex_num]();
+		pred = new int[_vertex_num]();
+		visited = new int[_vertex_num]();
 
 		int count, nextnode, i, j;
 
@@ -120,7 +122,7 @@ class Graph {
 			count++;
 		}
 
-		for(int i : nodes_of_interest) {
+		for(int i : _nodes_of_interest) {
 			if (i != startnode) {
 				_weight_distance.insert_or_assign({ startnode, i }, distance[i]);
 
@@ -139,7 +141,7 @@ class Graph {
 
 		delete[] distance, pred, visited;
 
-		DeleteMatrix(cost, vertex_num);
+		DeleteMatrix(cost, _vertex_num);
 	}
 
 public:
@@ -162,21 +164,21 @@ public:
 		*this = other;
 	}
 
-	Graph(int v_num , float** matrix) noexcept : vertex_num(v_num) {
-		OverwriteMatrix(matrix, _weight_matrix, vertex_num, vertex_num);
+	Graph(int v_num , float** matrix) noexcept : _vertex_num(v_num) {
+		OverwriteMatrix(matrix, _weight_matrix, _vertex_num, _vertex_num);
 	}
 
 	Graph& operator=(const Graph& other) {
-		OverwriteMatrix(other._weight_matrix, _weight_matrix, other.vertex_num, vertex_num);
-		OverwriteMatrix(other._population, _population, other.vertex_num, vertex_num);
-		OverwriteMatrix(other._distance, _distance, other.vertex_num, vertex_num);
+		OverwriteMatrix(other._weight_matrix, _weight_matrix, other._vertex_num, _vertex_num);
+		OverwriteMatrix(other._population, _population, other._vertex_num, _vertex_num);
+		OverwriteMatrix(other._distance, _distance, other._vertex_num, _vertex_num);
 
 		_route = other._route;
 		_weight_distance = other._weight_distance;
-		nodes_of_interest = other.nodes_of_interest;
-		storages = other.storages;
-		addresses = other.addresses;
-		vertex_num = other.vertex_num;
+		_nodes_of_interest = other._nodes_of_interest;
+		_storages = other._storages;
+		_addresses = other._addresses;
+		_vertex_num = other._vertex_num;
 	}
 
 	Graph& operator=(Graph&& other) {
@@ -185,9 +187,9 @@ public:
 
 		_route = std::move(other._route);
 		_weight_distance = std::move(other._weight_distance);
-		nodes_of_interest = std::move(other.nodes_of_interest);
-		storages = std::move(other.storages);
-		addresses = std::move(other.addresses);
+		_nodes_of_interest = std::move(other._nodes_of_interest);
+		_storages = std::move(other._storages);
+		_addresses = std::move(other._addresses);
 	}
 
 	Graph(std::string filename) {
@@ -195,8 +197,8 @@ public:
 	}
 
 	//for testing purposes
-	Graph(int matrix[5][5]): vertex_num(5) {
-		_weight_matrix = AllocateMatrix(vertex_num);
+	Graph(int matrix[5][5]): _vertex_num(5) {
+		_weight_matrix = AllocateMatrix(_vertex_num);
 		for (int i = 0; i < 5; ++i) {
 			for (int j = 0; j < 5; ++j) {
 				_weight_matrix[i][j] = (float)matrix[i][j];
@@ -210,7 +212,7 @@ public:
 		if (_weight_matrix == nullptr) return;
 
 		//TODO:support multithreading
-		for (int node : nodes_of_interest) {
+		for (int node : _nodes_of_interest) {
 			dijkstra(node);
 		}
 	}
@@ -234,22 +236,22 @@ public:
 		ifs.close();
 
 		if (_distance != nullptr) {
-			DeleteMatrix(_distance, vertex_num);
+			DeleteMatrix(_distance, _vertex_num);
 		}
 
 		if (_population != nullptr) {
-			DeleteMatrix(_population, vertex_num);
+			DeleteMatrix(_population, _vertex_num);
 		}
 
 		if (_weight_matrix != nullptr) {
-			DeleteMatrix(_weight_matrix, vertex_num);
+			DeleteMatrix(_weight_matrix, _vertex_num);
 		}
 
-		vertex_num = j.at("intersections").size();
+		_vertex_num = j.at("intersections").size();
 		
-		_distance = AllocateMatrix(vertex_num);
-		_population = AllocateMatrix(vertex_num);
-		_weight_matrix = AllocateMatrix(vertex_num);
+		_distance = AllocateMatrix(_vertex_num);
+		_population = AllocateMatrix(_vertex_num);
+		_weight_matrix = AllocateMatrix(_vertex_num);
 
 		for (auto e : j.at("roadSegments")) {
 			int x = e.at("NextIntersection").at("Id");
@@ -265,46 +267,46 @@ public:
 	//for testing purposes
 	void Writeoutmatrices() {
 		std::cout << "Population: \n";
-		for (int i = 0; i < vertex_num; ++i) {
-			for (int j = 0; j < vertex_num; ++j) {
+		for (int i = 0; i < _vertex_num; ++i) {
+			for (int j = 0; j < _vertex_num; ++j) {
 				std::cout << i << "," << j << ": " << _population[i][j] << "\n";
 			}
 		}
 
 		std::cout << "\n Distance: \n";
-		for (int i = 0; i < vertex_num; ++i) {
-			for (int j = 0; j < vertex_num; ++j) {
+		for (int i = 0; i < _vertex_num; ++i) {
+			for (int j = 0; j < _vertex_num; ++j) {
 				std::cout << i << "," << j << ": " << _distance[i][j] << "\n";
 			}
 		}
 
 		std::cout << "\n Weight: \n";
-		for (int i = 0; i < vertex_num; ++i) {
-			for (int j = 0; j < vertex_num; ++j) {
+		for (int i = 0; i < _vertex_num; ++i) {
+			for (int j = 0; j < _vertex_num; ++j) {
 				std::cout << i << "," << j << ": " << _weight_matrix[i][j] << "\n";
 			}
 		}
 	}
 
 	void OptimizeForPopulation() {
-		OverwriteMatrix(_population, _weight_matrix, vertex_num);
+		OverwriteMatrix(_population, _weight_matrix, _vertex_num);
 	}
 
 	void OptimizeForDistance() {
-		OverwriteMatrix(_distance, _weight_matrix, vertex_num);
+		OverwriteMatrix(_distance, _weight_matrix, _vertex_num);
 	}
 
 	void OptimizeForCustom(optimizeCB CB) {
-		for (int i = 0; i < vertex_num; ++i) {
-			for (int j = 0; j < vertex_num; ++j) {
+		for (int i = 0; i < _vertex_num; ++i) {
+			for (int j = 0; j < _vertex_num; ++j) {
 				_weight_matrix[i][j] = CB(_population[i][j], _distance[i][j]);
 			}
 		}
 	}
 
 	~Graph() {
-		DeleteMatrix(_weight_matrix, vertex_num);
+		DeleteMatrix(_weight_matrix, _vertex_num);
 	}
 
-	constexpr unsigned int GetVertexNum() const { return vertex_num; }
+	constexpr unsigned int GetVertexNum() const { return _vertex_num; }
 };

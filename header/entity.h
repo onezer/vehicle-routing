@@ -2,21 +2,22 @@
 
 #include <string>
 #include "Graph.hpp"
+#include "gene.hpp"
 
 class Entity {
 	
-	std::string gene;
+	Gene gene;
 
 	Graph* _graph;
 public:
 
-	Entity(const std::string & gene, Graph* graph);
-	Entity(std::string && gene, Graph* graph);
+	Entity(const Gene & gene, Graph* graph);
+	Entity(Gene && gene, Graph* graph);
 	float Cost() const;
 
-	std::string Crossover(const std::string & other) const;
-	std::string Mutation() const;
+	Gene Crossover(const Gene & other) const;
+	Gene Mutation() const;
 
-	const std::string & GetGene() const;
+	const Gene & GetGene() const;
 
 };
