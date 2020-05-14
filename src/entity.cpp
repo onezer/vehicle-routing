@@ -18,6 +18,21 @@ float Entity::Cost() const
 {
 	float cost = 0;
 
+	for (int i = 0; i < gene.groups.size(); ++i) {
+		char label = gene.groups[i];
+
+		cost += _graph->GetDistanceBetween(_graph->GetStore(), gene.order.at(label)[0]);
+
+		for (int j = 0; j < gene.order.at(label).size(); ++j) {
+			if (j == gene.order.at(label).size() - 1) {
+				cost += _graph->GetDistanceBetween(_graph->GetStore(), gene.order.at(label)[j]);
+			}
+			else {
+				cost += _graph->GetDistanceBetween(gene.order.at(label)[j], gene.order.at(label)[j+1]);
+			}
+		}
+	}
+
 	return cost;
 }
 
@@ -32,42 +47,47 @@ Gene Entity::Crossover(const Gene & other) const
 
 		int order_size = gene.order.at(label).size();
 
-		bool* choose = new bool[order_size];
-
-		//inicialize choose bool array with random values
-		for (int j = 0; j < order_size; ++j) {
-			choose[j] = rand() % 100 < 50;
-		}
-
 		std::vector<int> temp;
 		std::vector<int> order;
 
 		//mixing the two order vectors
 		for (int j = 0; j < order_size; ++j) {
-			temp.push_back(gene.order.at(label)[j]);
-			temp.push_back(other.order.at(label)[j]);
+			if (rand() % 100 < 50) {
+				temp.push_back(gene.order.at(label)[j]);
+				temp.push_back(other.order.at(label)[j]);
+			}
+			else {
+				temp.push_back(other.order.at(label)[j]);
+				temp.push_back(gene.order.at(label)[j]);
+			}
+			
 		}
 
-		int k = 0;
-		std::unordered_map<int, bool> visited;
+		std::unordered_map<int, char> choose;
+
+		//inicialize choose random values
+		//a = first pick, unvisited
+		//b = second pick, unvisited
+		//c = first pick, visited
+		//d = second pick, visited
+		for (int j = 0; j < order_size; ++j) {
+			char decision = rand() % 100 < 50 ? 'a' : 'b';
+
+			choose.insert({gene.order.at(label)[j], decision});
+		}
 
 		//removing duplicates
 		for(int j = 0; j < temp.size(); ++j){
-			if (visited.find(temp[j]) == visited.end()) {
-				if (choose[k]) {
-					order.push_back(temp[j]);
-					++k;
-				}
-
-				visited.insert({temp[j], true});
+			if (choose.at(temp[j]) == 'a') {
+				order.push_back(temp[j]);
+				choose.insert_or_assign(temp[j], 'c');
 			}
-			else {
-				if (choose[k] == false) {
-					order.push_back(temp[j]);
-					++k;
-				}
+			else if(choose.at(temp[j]) == 'b'){
+				choose.insert_or_assign(temp[j], 'd');
 			}
-
+			else if (choose.at(temp[j]) == 'd') {
+				order.push_back(temp[j]);
+			}
 		}
 
 		newGene.order.insert({ label, order });

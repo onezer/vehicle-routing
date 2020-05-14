@@ -26,9 +26,9 @@ class Graph {
 	float** _distance = nullptr;
 
 
-	std::vector<int> _storages;
+	int _storage;
 	std::vector<int> _addresses;
-	std::vector<int> _nodes_of_interest; //storages+addresses
+	std::vector<int> _nodes_of_interest; //storage+addresses
 
 	std::unordered_map<int, char> _labels;
 	std::unordered_map<char, std::vector<int>> _nodes_by_group;
@@ -176,7 +176,7 @@ public:
 		_route = other._route;
 		_weight_distance = other._weight_distance;
 		_nodes_of_interest = other._nodes_of_interest;
-		_storages = other._storages;
+		_storage = other._storage;
 		_addresses = other._addresses;
 		_vertex_num = other._vertex_num;
 	}
@@ -188,7 +188,7 @@ public:
 		_route = std::move(other._route);
 		_weight_distance = std::move(other._weight_distance);
 		_nodes_of_interest = std::move(other._nodes_of_interest);
-		_storages = std::move(other._storages);
+		_storage = std::move(other._storage);
 		_addresses = std::move(other._addresses);
 	}
 
@@ -206,7 +206,9 @@ public:
 		}
 	}
 
-
+	int GetStore() {
+		return _storage;
+	}
 
 	void CalculateDistances() {
 		if (_weight_matrix == nullptr) return;
