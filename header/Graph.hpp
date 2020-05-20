@@ -30,9 +30,7 @@ class Graph {
 	std::vector<int> _addresses;
 	std::vector<int> _nodes_of_interest; //storage+addresses
 
-	std::unordered_map<int, char> _labels;
 	std::unordered_map<char, std::vector<int>> _nodes_by_group;
-	std::vector<char> _groups;
 
 	//distances and routes variables only contain the distances and routes for the nodes of interest
 	std::unordered_map<std::pair<int, int>, float> _weight_distance; //_distance[{2,5}] gives the minimum distance between the node 2 and 5
@@ -149,11 +147,17 @@ public:
 	typedef float(*optimizeCB)(float, float);
 
 	void LabelNode(int node, char label) {
-		_labels.insert_or_assign(node, label);
+		if (_nodes_by_group.find(label) == _nodes_by_group.end()) {
+			_nodes_by_group.at(label).push_back(node);
+		}
+		else {
+			_nodes_by_group.insert({label, std::vector<int>()});
+			_nodes_by_group.at(label).push_back(node);
+		}
 	}
 
-	char GetLabel(int node) {
-		return _labels.at(node);
+	std::unordered_map<char, std::vector<int>> Get_nodes_by_group() {
+		return _nodes_by_group;
 	}
 
 	Graph(const Graph& other) noexcept {
