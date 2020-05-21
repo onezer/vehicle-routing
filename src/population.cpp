@@ -16,12 +16,29 @@ void Population::CreateEntities(int num)
 {
 	for (int i = 0; i < num; ++i) {
 		Gene currentGene;
-		/*for (int j = 0; j < goal.size(); ++j) {
-			int pos = rand() % tempGoal.size();
+		
+		std::unordered_map<char, std::vector<int>> nodes = _graph->Get_nodes_by_group();
 
-			currentGene.push_back(tempGoal[pos]);
-			tempGoal.erase(pos, 1);
-		}*/
+		for (std::pair<char, std::vector<int>> element : nodes) {
+			currentGene.groups.push_back(element.first);
+
+			std::vector<int> tmpOrder = element.second;
+
+			for (int j = 0; j < tmpOrder.size(); ++j) {
+				int first = rand() % tmpOrder.size();
+				int second = rand() % tmpOrder.size();
+
+				while (first != second) {
+					int first = rand() % tmpOrder.size();
+					int second = rand() % tmpOrder.size();
+				}
+
+				std::swap(tmpOrder[first], tmpOrder[second]);
+			}
+
+			currentGene.order.insert({element.first, tmpOrder});
+		}
+
 		AddEntity(currentGene);
 	}
 }
