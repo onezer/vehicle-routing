@@ -22,7 +22,7 @@ public:
 
 	void CreateEntities(int num);
 	
-	int Iterate(); //returns lowest cost
+	float Iterate(); //returns lowest cost
 	Gene BestGene();
 
 private:

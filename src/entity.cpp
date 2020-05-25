@@ -114,9 +114,9 @@ Gene Entity::Mutation() const
 			int first = rand() % order_size;
 			int second = rand() % order_size;
 
-			while (first != second) {
-				int first = rand() % order_size;
-				int second = rand() % order_size;
+			while (first == second) {
+				first = rand() % order_size;
+				second = rand() % order_size;
 			}
 
 			std::swap(order[first], order[second]);

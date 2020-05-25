@@ -147,13 +147,15 @@ public:
 	typedef float(*optimizeCB)(float, float);
 
 	void LabelNode(int node, char label) {
-		if (_nodes_by_group.find(label) == _nodes_by_group.end()) {
+		if (_nodes_by_group.find(label) != _nodes_by_group.end()) {
 			_nodes_by_group.at(label).push_back(node);
 		}
 		else {
 			_nodes_by_group.insert({label, std::vector<int>()});
 			_nodes_by_group.at(label).push_back(node);
 		}
+
+		_nodes_of_interest.push_back(node);
 	}
 
 	std::unordered_map<char, std::vector<int>> Get_nodes_by_group() {
@@ -212,6 +214,11 @@ public:
 
 	int GetStore() {
 		return _storage;
+	}
+
+	void SetStore(int st) {
+		_storage = st;
+		_nodes_of_interest.push_back(st);
 	}
 
 	void CalculateDistances() {

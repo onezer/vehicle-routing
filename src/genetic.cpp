@@ -1,4 +1,5 @@
 #include "genetic.h"
+#include "gene.hpp"
 
 Genetic::Genetic(Parameters parameters, Graph* graph) : parameters{parameters}, _graph{graph}
 {
@@ -6,16 +7,23 @@ Genetic::Genetic(Parameters parameters, Graph* graph) : parameters{parameters}, 
 
 void Genetic::InitializePopulation(int num)
 {
+	if (num == 0)
+		num = parameters.max_population;
 	population = Population(num, parameters, _graph);
 }
 
-int Genetic::Iterate()
+float Genetic::Iterate()
 {
 	population.CreateEntities(parameters.new_entities);
 
-	int cost = population.Iterate();
+	float cost = population.Iterate();
 
 	return cost;
+}
+
+void Genetic::WriteRoute()
+{
+	Gene gene = population.BestGene();
 }
 
 Gene Genetic::GetBestGene()

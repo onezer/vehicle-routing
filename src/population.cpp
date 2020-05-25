@@ -28,9 +28,9 @@ void Population::CreateEntities(int num)
 				int first = rand() % tmpOrder.size();
 				int second = rand() % tmpOrder.size();
 
-				while (first != second) {
-					int first = rand() % tmpOrder.size();
-					int second = rand() % tmpOrder.size();
+				while (first == second) {
+					first = rand() % tmpOrder.size();
+					second = rand() % tmpOrder.size();
 				}
 
 				std::swap(tmpOrder[first], tmpOrder[second]);
@@ -43,7 +43,7 @@ void Population::CreateEntities(int num)
 	}
 }
 
-int Population::Iterate()
+float Population::Iterate()
 {
 	while (genePool.size() < parameters.max_population) {
 		if (rand() % 2 == 1 && genePool.size() > 1) {
@@ -105,7 +105,7 @@ void Population::AddEntity(Gene && gene)
 
 	Entity currentEntity(gene, _graph);
 
-	genePool.push_back(std::pair<int, Entity>(currentEntity.Cost(), currentEntity));
+	genePool.push_back(std::pair<float, Entity>(currentEntity.Cost(), currentEntity));
 }
 
 void Population::SortGenePool()
