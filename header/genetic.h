@@ -17,7 +17,7 @@ public:
 
 	float Iterate(); //returns the lowest cost in current generation
 
-	void WriteRoute();
+	std::string WriteRoute();
 
 	Gene GetBestGene();
 };

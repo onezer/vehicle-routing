@@ -21,9 +21,41 @@ float Genetic::Iterate()
 	return cost;
 }
 
-void Genetic::WriteRoute()
+std::string Genetic::WriteRoute()
 {
 	Gene gene = population.BestGene();
+	const Graph *graph = population.GetGraph();
+	
+	std::string route = "";
+
+	int store = graph->GetStore();
+
+	std::vector<int> tmpRoute;
+
+	for (char label : gene.groups) {
+		int prev = store;
+
+		for (int gNode : gene.order.at(label)) {
+			tmpRoute = graph->GetRouteBetween(prev, gNode);
+
+			for (int node : tmpRoute) {
+				route += std::to_string(node);
+				route += "-->";
+			}
+
+			prev = gNode;
+		}
+
+		tmpRoute = graph->GetRouteBetween(prev, store);
+
+		for (int node : tmpRoute) {
+			route += std::to_string(node);
+			route += "-->";
+		}
+	}
+	route += std::to_string(store);
+
+	return route;
 }
 
 Gene Genetic::GetBestGene()

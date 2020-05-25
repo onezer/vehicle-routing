@@ -45,10 +45,10 @@ Gene Entity::Crossover(const Gene & other) const
 	for (int i = 0; i < gene.groups.size(); ++i) {
 		char label = gene.groups[i];
 
-		int order_size = gene.order.at(label).size();
-
 		std::vector<int> temp;
 		std::vector<int> order;
+
+		int order_size = gene.order.at(label).size();
 
 		//mixing the two order vectors
 		for (int j = 0; j < order_size; ++j) {

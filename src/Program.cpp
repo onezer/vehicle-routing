@@ -27,25 +27,11 @@ int main() {
 	//g.Writeoutmatrices();
 
 	g.LabelNode(3, 'a');
-	g.LabelNode(4, 'a');
-	g.LabelNode(0, 'a');
-	g.LabelNode(112, 'a');
-	g.LabelNode(255, 'a');
-	g.LabelNode(458, 'a');
-	g.LabelNode(26, 'a');
-	g.LabelNode(287, 'a');
-	g.LabelNode(302, 'a');
-	g.LabelNode(445, 'a');
-	g.LabelNode(89, 'a');
-	g.LabelNode(65, 'a');
-	g.LabelNode(14, 'a');
-	g.LabelNode(325, 'a');
-	g.LabelNode(514, 'a');
-	g.LabelNode(87, 'a');
-	g.LabelNode(296, 'a');
-	g.LabelNode(311, 'a');
 	g.LabelNode(357, 'a');
 	g.LabelNode(200, 'a');
+	g.LabelNode(65, 'b');
+	g.LabelNode(14, 'b');
+	g.LabelNode(325, 'b');
 
 	g.SetStore(300);
 
@@ -54,7 +40,7 @@ int main() {
 	g.CalculateDistances();
 	std::cout << " done\n";
 	
-	Parameters params(3000, 300, 1500);
+	Parameters params(300, 30, 150);
 
 	Genetic genetic(params, &g);
 
@@ -62,7 +48,7 @@ int main() {
 	genetic.InitializePopulation();
 	std::cout << " done\n";
 	
-	for (int i = 0; i < 200; ++i) {
+	for (int i = 0; i < 10; ++i) {
 		/*if (i > 0) {
 			std::cout << "\n";
 		}*/
@@ -72,9 +58,10 @@ int main() {
 		if (i % 10 == 0) {
 			std::cout << i << ". gen:  " << cost << std::endl;
 		}
-
 		
 	}
+
+	std::cout << genetic.WriteRoute();
 
 	return 0;
 }

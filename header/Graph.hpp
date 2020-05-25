@@ -212,7 +212,7 @@ public:
 		}
 	}
 
-	int GetStore() {
+	int GetStore() const {
 		return _storage;
 	}
 
@@ -230,14 +230,14 @@ public:
 		}
 	}
 
-	float GetDistanceBetween(int x, int y) {
+	float GetDistanceBetween(int x, int y) const {
 		//TODO: check for validity of input
-		return _weight_distance[{x, y}];
+		return _weight_distance.at({x, y});
 	}
 
-	std::vector<int> GetRouteBetween(int x, int y) {
+	std::vector<int> GetRouteBetween(int x, int y) const {
 		//TODO: check for validity of input
-		return _route[{x, y}];
+		return _route.at({x, y});
 	}
 
 	void ParseJSON(std::string filename) {
@@ -278,7 +278,7 @@ public:
 	}
 
 	//for testing purposes
-	void Writeoutmatrices() {
+	void Writeoutmatrices() const {
 		std::cout << "Population: \n";
 		for (int i = 0; i < _vertex_num; ++i) {
 			for (int j = 0; j < _vertex_num; ++j) {

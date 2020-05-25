@@ -24,6 +24,8 @@ public:
 	
 	float Iterate(); //returns lowest cost
 	Gene BestGene();
+	const Graph* GetGraph() const;
+
 
 private:
 	void AddEntity(const Gene &);

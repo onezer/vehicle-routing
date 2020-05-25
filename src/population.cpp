@@ -80,6 +80,11 @@ Gene Population::BestGene()
 	return genePool[0].second.GetGene();
 }
 
+const Graph * Population::GetGraph() const
+{
+	return _graph;
+}
+
 bool Compare(const std::pair<int, Entity> & first, const std::pair<int, Entity> & second)
 {
 	return (first.first < second.first);
