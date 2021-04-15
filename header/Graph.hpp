@@ -203,14 +203,14 @@ public:
 	}
 
 	//for testing purposes
-	Graph(int matrix[5][5]): _vertex_num(5) {
+	/*Graph(int matrix[5][5]): _vertex_num(5) {
 		_weight_matrix = AllocateMatrix(_vertex_num);
 		for (int i = 0; i < 5; ++i) {
 			for (int j = 0; j < 5; ++j) {
 				_weight_matrix[i][j] = (float)matrix[i][j];
 			}
 		}
-	}
+	}*/
 
 	int GetStore() const {
 		return _storage;
@@ -274,6 +274,27 @@ public:
 			_distance[y][x] = e.at("Length");		//every road is two way
 			_population[x][y] = e.at("Population");
 			_population[y][x] = e.at("Population");
+		}
+	}
+
+	void ParseGroups(std::string filename) {
+		json j;
+
+		std::ifstream ifs(filename, std::ifstream::in);
+		if (ifs.good() == false) return;
+		j << ifs;
+		ifs.close();
+
+		for (auto group : j.at("groups")) {
+			int id = group.at("id");
+			int g = group.at("group");
+			if ((char)g == 's') {
+				SetStore(id)
+			}
+			else {
+				LabelNode(id, (char)g);
+			}
+			
 		}
 	}
 

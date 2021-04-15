@@ -26,14 +26,14 @@ int main() {
 
 	//g.Writeoutmatrices();
 
-	g.LabelNode(3, 'a');
+	/*g.LabelNode(3, 'a');
 	g.LabelNode(357, 'a');
 	g.LabelNode(200, 'a');
 	g.LabelNode(65, 'b');
 	g.LabelNode(14, 'b');
-	g.LabelNode(325, 'b');
+	g.LabelNode(325, 'b');*/
 
-	g.SetStore(300);
+	//g.SetStore(300);
 
 
 	std::cout << "Calculating best routes...";
@@ -43,15 +43,13 @@ int main() {
 	Parameters params(300, 30, 150);
 
 	Genetic genetic(params, &g);
+	genetic.name = "test";
 
 	std::cout << "Initializing population...";
 	genetic.InitializePopulation();
 	std::cout << " done\n";
 	
 	for (int i = 0; i < 10; ++i) {
-		/*if (i > 0) {
-			std::cout << "\n";
-		}*/
 
 		float cost = genetic.Iterate();
 
@@ -61,7 +59,13 @@ int main() {
 		
 	}
 
-	std::cout << genetic.WriteRoute();
+	//std::cout << genetic.WriteRoute();
+
+	genetic.WriteRouteToFile("D:/cities/route.json");
+
+	Graph g("D:/cities/roadNetwork_big_600.json");
+
+	g.ParseGroups("D:/cities/groups.json");
 
 	return 0;
 }

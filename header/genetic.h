@@ -11,6 +11,8 @@ class Genetic {
 	Graph* _graph;
 
 public:
+	std::string name;
+
 	Genetic(Parameters parameters, Graph* graph);
 
 	void InitializePopulation(int num = 0);
@@ -18,6 +20,7 @@ public:
 	float Iterate(); //returns the lowest cost in current generation
 
 	std::string WriteRoute();
+	void Genetic::WriteRouteToFile(std::string filename);
 
 	Gene GetBestGene();
 };

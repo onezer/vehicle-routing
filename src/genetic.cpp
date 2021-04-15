@@ -58,6 +58,14 @@ std::string Genetic::WriteRoute()
 	return route;
 }
 
+void Genetic::WriteRouteToFile(std::string filename) {
+	std::string route = WriteRoute();
+
+	std::ofstream out(filename);
+	out << route;
+	out.close;
+}
+
 Gene Genetic::GetBestGene()
 {
 	return population.BestGene();
