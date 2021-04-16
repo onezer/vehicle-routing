@@ -11,11 +11,11 @@ set(srcs
 	
 set(headers
 	header/Graph.hpp
-	headers/json.hpp
-	headers/genetic.h
-	headers/entity.h
-	headers/parameters.h
-	headers/population.h
+	header/json.hpp
+	header/genetic.h
+	header/entity.h
+	header/parameters.h
+	header/population.h
 )
 
 add_executable(${PROJECT_NAME}
